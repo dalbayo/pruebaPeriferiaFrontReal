@@ -2,7 +2,7 @@
   <div class="col-md-6">
     <div class="card">
       <div class="card-header">
-        <h3 class="mb-0">Sign Up</h3>
+        <h3 class="mb-0">Registrarse</h3>
       </div>
       <div class="card-body">
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
@@ -24,7 +24,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">Contraseña</label>
             <input
               type="password"
               class="form-control"
@@ -37,14 +37,14 @@
               signupForm.get('password')?.touched
             ) {
               <div class="text-danger">
-                Password should be at least 6 characters.
+                La contraseña debe tener al menos 6 caracteres.
               </div>
             }
           </div>
 
           <div class="mb-3">
             <label for="confirmPassword" class="form-label"
-              >Confirm Password</label
+              >Confirmar contraseña</label
             >
             <input
               type="password"
@@ -57,7 +57,7 @@
               signupForm.hasError('passwordMismatch') &&
               signupForm.get('confirmPassword')?.touched
             ) {
-              <div class="text-danger">Password is not matching</div>
+              <div class="text-danger">Las contraseñas no coinciden</div>
             }
           </div>
 
@@ -66,13 +66,13 @@
             type="submit"
             [disabled]="signupForm.invalid"
           >
-            Sign Up
+            Registrarse
           </button>
         </form>
       </div>
       <div class="card-footer">
         <a routerLink="/login" class="btn btn-link w-100">
-          Already registered? Login here
+          ¿Ya tienes cuenta? Inicia sesión aquí
         </a>
       </div>
     </div>

@@ -2,7 +2,7 @@
   <div class="col-md-6">
     <div class="card">
       <div class="card-header">
-        <h3 class="mb-0">Login</h3>
+        <h3 class="mb-0">Iniciar sesión</h3>
       </div>
       <div class="card-body">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -24,7 +24,7 @@
             }
           </div>
           <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">Contraseña</label>
             <input
               type="password"
               class="form-control"
@@ -37,7 +37,7 @@
               (loginForm.get('password')?.dirty ||
                 loginForm.get('password')?.touched)
             ) {
-              <div class="text-danger">Password is required</div>
+              <div class="text-danger">La contraseña es requerida</div>
             }
           </div>
           <button
@@ -45,11 +45,18 @@
             class="btn btn-primary w-100"
             [disabled]="loginForm.invalid"
           >
-            Login
+            Iniciar sesión
           </button>
         </form>
       </div>
-
+      <div class="card-footer">
+        <a routerLink="/signup" class="btn btn-link w-100"
+          >Registrarme</a
+        >
+        <a routerLink="/forgot-password" class="btn btn-link w-100"
+          >Olvido Contraseña</a
+        >
+      </div>
     </div>
   </div>
 </div>

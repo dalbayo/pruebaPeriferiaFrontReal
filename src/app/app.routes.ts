@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { LoginComponent } from './components/login/login.component';
 import { SignupComponent } from './components/signup/signup.component';
@@ -22,6 +21,5 @@ export const routes: Routes = [
     title: 'Forgot Password',
   },
   { path: 'login-redirect', component: LoginRedirectsComponent },
-  { path: 'home', component: HomeComponent, title: 'Home' },
   { path: '**', component: PageNotFoundComponent },
 ];
