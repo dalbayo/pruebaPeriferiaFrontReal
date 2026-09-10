@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions, ValueFormatterParams } from 'ag-grid-community';
 import { PublicacionService } from '../../services/publicacion.service';
 import { Publicacion } from '../../models/publicacion.model';
+import { PublicacionFormDialogComponent } from '../../dialogs/publicacion-form-dialog/publicacion-form-dialog.component';
 
 const ESTADO_LABELS: Record<number, string> = {
   0: 'Borrador',
@@ -22,7 +25,14 @@ export const FILTRO_TIPOS = [
 @Component({
   selector: 'app-mis-publicaciones',
   standalone: true,
-  imports: [AgGridModule, NgIf, NgFor, FormsModule],
+  imports: [
+    AgGridModule,
+    NgIf,
+    NgFor,
+    FormsModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
   templateUrl: './mis-publicaciones.component.html',
   styleUrls: ['./mis-publicaciones.component.scss'],
 })
@@ -71,7 +81,10 @@ export class MisPublicacionesComponent implements OnInit {
     { field: 'creadoEn', headerName: 'Creado en', width: 170 },
   ];
 
-  constructor(private publicacionService: PublicacionService) {}
+  constructor(
+    private publicacionService: PublicacionService,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.loadPublicaciones();
@@ -79,6 +92,18 @@ export class MisPublicacionesComponent implements OnInit {
 
   onFiltroChange(): void {
     this.loadPublicaciones();
+  }
+
+  abrirCrearPublicacion(): void {
+    const dialogRef = this.dialog.open(PublicacionFormDialogComponent, {
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe((creada) => {
+      if (creada) {
+        this.loadPublicaciones();
+      }
+    });
   }
 
   loadPublicaciones(): void {

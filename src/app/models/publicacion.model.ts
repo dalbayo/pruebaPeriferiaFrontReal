@@ -17,3 +17,16 @@ export interface Publicacion {
   actualizadoEn: string;
   eliminado: number;
 }
+
+// Body para POST /api/publicaciones. El backend (PublicacionController.crear)
+// recibe la entidad Publicacion tal cual: usuario se asigna solo desde el token,
+// slug se genera solo si viene vacio, y categoria (si aplica) va anidada como {id}.
+export interface PublicacionCreateRequest {
+  titulo: string;
+  resumen?: string | null;
+  contenido: string;
+  /** 0 = Borrador, 1 = Publicado, 2 = Archivado */
+  estado: number;
+  fechaPublicacion?: string | null;
+  categoria?: { id: number } | null;
+}

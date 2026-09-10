@@ -2,7 +2,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Publicacion } from '../models/publicacion.model';
+import {
+  Publicacion,
+  PublicacionCreateRequest,
+} from '../models/publicacion.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,5 +20,9 @@ export class PublicacionService {
   getPublicaciones(tipo: number = 0): Observable<Publicacion[]> {
     const params = new HttpParams().set('tipo', tipo.toString());
     return this.http.get<Publicacion[]>(this.baseUrl, { params });
+  }
+
+  crearPublicacion(request: PublicacionCreateRequest): Observable<Publicacion> {
+    return this.http.post<Publicacion>(this.baseUrl, request);
   }
 }
