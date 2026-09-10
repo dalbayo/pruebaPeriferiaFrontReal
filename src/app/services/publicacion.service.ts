@@ -25,4 +25,15 @@ export class PublicacionService {
   crearPublicacion(request: PublicacionCreateRequest): Observable<Publicacion> {
     return this.http.post<Publicacion>(this.baseUrl, request);
   }
+
+  actualizarPublicacion(
+    id: number,
+    request: PublicacionCreateRequest,
+  ): Observable<Publicacion> {
+    return this.http.put<Publicacion>(`${this.baseUrl}/${id}`, request);
+  }
+
+  eliminarPublicacion(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }

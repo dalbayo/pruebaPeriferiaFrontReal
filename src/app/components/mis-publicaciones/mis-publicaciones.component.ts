@@ -4,10 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridOptions, ValueFormatterParams } from 'ag-grid-community';
+import {
+  CellClickedEvent,
+  ColDef,
+  GridOptions,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import { PublicacionService } from '../../services/publicacion.service';
 import { Publicacion } from '../../models/publicacion.model';
 import { PublicacionFormDialogComponent } from '../../dialogs/publicacion-form-dialog/publicacion-form-dialog.component';
+import { DeleteDialogComponent } from '../../dialogs/delete-dialog/delete-dialog.component';
 
 const ESTADO_LABELS: Record<number, string> = {
   0: 'Borrador',
@@ -54,10 +60,32 @@ export class MisPublicacionesComponent implements OnInit {
       resizable: true,
       floatingFilter: true,
     },
+    onCellClicked: (event: CellClickedEvent) => {
+      if (event.colDef.field !== 'acciones') {
+        return;
+      }
+      const boton = (event.event?.target as HTMLElement)?.closest('button');
+      const accion = boton?.getAttribute('data-action');
+      if (accion === 'editar') {
+        this.abrirEditarPublicacion(event.data as Publicacion);
+      } else if (accion === 'eliminar') {
+        this.confirmarEliminarPublicacion(event.data as Publicacion);
+      }
+    },
   };
 
   columnDefs: ColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
+    {
+      field: 'acciones',
+      headerName: 'Acciones',
+      width: 190,
+      sortable: false,
+      filter: false,
+      cellRenderer: () =>
+        '<button class="btn btn-sm btn-outline-primary me-1" type="button" data-action="editar">Editar</button>' +
+        '<button class="btn btn-sm btn-outline-danger" type="button" data-action="eliminar">Eliminar</button>',
+    },
     {
       field: 'titulo',
       headerName: 'Título',
@@ -103,6 +131,44 @@ export class MisPublicacionesComponent implements OnInit {
       if (creada) {
         this.loadPublicaciones();
       }
+    });
+  }
+
+  abrirEditarPublicacion(publicacion: Publicacion): void {
+    const dialogRef = this.dialog.open(PublicacionFormDialogComponent, {
+      width: '600px',
+      data: { publicacion },
+    });
+
+    dialogRef.afterClosed().subscribe((actualizada) => {
+      if (actualizada) {
+        this.loadPublicaciones();
+      }
+    });
+  }
+
+  confirmarEliminarPublicacion(publicacion: Publicacion): void {
+    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      data: {
+        message: `¿Deseas eliminar la publicación "${publicacion.titulo}"?`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((resultado) => {
+      if (resultado?.clicked === 'submit') {
+        this.eliminarPublicacion(publicacion.id);
+      }
+    });
+  }
+
+  private eliminarPublicacion(id: number): void {
+    this.errorMessage = '';
+    this.publicacionService.eliminarPublicacion(id).subscribe({
+      next: () => this.loadPublicaciones(),
+      error: (err) => {
+        this.errorMessage =
+          err?.error?.message || 'No se pudo eliminar la publicación.';
+      },
     });
   }
 

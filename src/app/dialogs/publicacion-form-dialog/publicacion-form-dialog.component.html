@@ -1,5 +1,5 @@
 <div class="form-container">
-  <h2 mat-dialog-title>Crear publicación</h2>
+  <h2 mat-dialog-title>{{ editMode ? 'Editar publicación' : 'Crear publicación' }}</h2>
   <mat-dialog-content>
     <form [formGroup]="publicacionForm">
       <mat-form-field appearance="fill" class="full-width">
@@ -60,7 +60,7 @@
       (click)="submit()"
       [disabled]="guardando"
     >
-      {{ guardando ? 'Guardando...' : 'Guardar' }}
+      {{ guardando ? 'Guardando...' : (editMode ? 'Actualizar' : 'Guardar') }}
     </button>
   </mat-dialog-actions>
 </div>

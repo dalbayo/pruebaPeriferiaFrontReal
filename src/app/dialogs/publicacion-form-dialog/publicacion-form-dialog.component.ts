@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { NgIf, NgFor } from '@angular/common';
 import {
   FormBuilder,
@@ -6,7 +6,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -48,20 +52,34 @@ export class PublicacionFormDialogComponent implements OnInit {
   cargandoCategorias = false;
   guardando = false;
   errorMessage = '';
+  editMode = false;
 
   constructor(
     private fb: FormBuilder,
     private publicacionService: PublicacionService,
     private categoriaService: CategoriaService,
     private dialogRef: MatDialogRef<PublicacionFormDialogComponent>,
+    @Optional()
+    @Inject(MAT_DIALOG_DATA)
+    private data: { publicacion?: Publicacion } | null,
   ) {
+    const publicacion = this.data?.publicacion;
+    this.editMode = !!publicacion;
+
     this.publicacionForm = this.fb.group({
-      titulo: ['', [Validators.required, Validators.maxLength(255)]],
-      resumen: [''],
-      contenido: ['', Validators.required],
-      estado: [0, Validators.required],
-      categoriaId: [null],
-      fechaPublicacion: [this.hoyComoInputDate()],
+      titulo: [
+        publicacion?.titulo || '',
+        [Validators.required, Validators.maxLength(255)],
+      ],
+      resumen: [publicacion?.resumen || ''],
+      contenido: [publicacion?.contenido || '', Validators.required],
+      estado: [publicacion?.estado ?? 0, Validators.required],
+      categoriaId: [publicacion?.categoriaId ?? null],
+      fechaPublicacion: [
+        publicacion?.fechaPublicacion
+          ? publicacion.fechaPublicacion.substring(0, 10)
+          : this.hoyComoInputDate(),
+      ],
     });
   }
 
@@ -103,15 +121,26 @@ export class PublicacionFormDialogComponent implements OnInit {
 
     this.guardando = true;
     this.errorMessage = '';
-    this.publicacionService.crearPublicacion(request).subscribe({
-      next: (creada: Publicacion) => {
+
+    const peticion = this.editMode
+      ? this.publicacionService.actualizarPublicacion(
+          this.data!.publicacion!.id,
+          request,
+        )
+      : this.publicacionService.crearPublicacion(request);
+
+    peticion.subscribe({
+      next: (resultado: Publicacion) => {
         this.guardando = false;
-        this.dialogRef.close(creada);
+        this.dialogRef.close(resultado);
       },
       error: (err) => {
         this.guardando = false;
         this.errorMessage =
-          err?.error?.message || 'No se pudo crear la publicación.';
+          err?.error?.message ||
+          (this.editMode
+            ? 'No se pudo actualizar la publicación.'
+            : 'No se pudo crear la publicación.');
       },
     });
   }
