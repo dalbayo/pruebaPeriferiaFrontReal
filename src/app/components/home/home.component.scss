@@ -1,0 +1,9 @@
+.list-group-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  i {
+    color: #2e7d32;
+  }
+}
