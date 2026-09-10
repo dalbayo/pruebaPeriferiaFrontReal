@@ -1,9 +1,9 @@
 export const AUTH_ERRORS: Record<string, string> = {
-  'auth/invalid-email': 'Invalid email address format.',
-  'auth/user-disabled': 'This user has been disabled.',
-  'auth/user-not-found': 'User not found.',
-  'auth/wrong-password': 'Incorrect password.',
-  'auth/email-already-in-use': 'This email is already in use.',
-  'auth/weak-password': 'The password is too weak.',
-  'auth/invalid-credential': 'Invalid credentials.',
+  'auth/invalid-email': 'Formato de correo inválido.',
+  'auth/user-disabled': 'Este usuario ha sido deshabilitado.',
+  'auth/user-not-found': 'Usuario no encontrado.',
+  'auth/wrong-password': 'Contraseña incorrecta.',
+  'auth/email-already-in-use': 'Este correo ya está en uso.',
+  'auth/weak-password': 'La contraseña es demasiado débil.',
+  'auth/invalid-credential': 'Credenciales inválidas.',
 };

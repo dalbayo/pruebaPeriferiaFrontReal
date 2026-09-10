@@ -7,12 +7,14 @@ import {
   HttpClient,
   HttpClientModule,
   provideHttpClient,
+  withInterceptors,
 } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire/compat'; // Compatibility import
 import { environment } from '../environments/environment';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { InitConfigService, initializeApp } from './services/init-config.service';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json');
@@ -22,7 +24,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

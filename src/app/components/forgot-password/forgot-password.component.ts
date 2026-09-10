@@ -47,15 +47,15 @@ export class ForgotPasswordComponent {
       this.authApiService.forgotPassword(username).subscribe({
         next: () => {
           this.snackBar.open(
-            'Password reset requested. Check your inbox.',
-            'Close',
+            'Solicitud de restablecimiento enviada. Revisa tu correo.',
+            'Cerrar',
             { duration: 5000 },
           );
         },
         error: (err) => {
           this.snackBar.open(
             `Error: ${err?.error?.message || err.message}`,
-            'Close',
+            'Cerrar',
             { duration: 5000 },
           );
         },

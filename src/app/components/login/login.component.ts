@@ -52,12 +52,20 @@ export class LoginComponent implements OnInit {
 
     this.authApiService.login(username, password).subscribe({
       next: () => {
-        this.toastService.success('Login successful', 'LOGIN SUCCESS', 4000);
-        this.router.navigateByUrl('/home');
+        this.toastService.success(
+          'Inicio de sesión exitoso',
+          'INICIO DE SESIÓN EXITOSO',
+          4000,
+        );
+        this.router.navigateByUrl('/publicaciones');
       },
       error: (err) => {
         this.loginError = this.getErrorMessage(err);
-        this.toastService.danger(this.loginError, 'LOGIN ERROR', 4000);
+        this.toastService.danger(
+          this.loginError,
+          'ERROR DE INICIO DE SESIÓN',
+          4000,
+        );
       },
     });
   }

@@ -75,15 +75,15 @@ export class SignupComponent {
       this.authApiService.register(username, password).subscribe({
         next: () => {
           this.toastService.success(
-            'User created successfully',
-            'SIGNUP SUCCESS',
+            'Usuario creado exitosamente',
+            'REGISTRO EXITOSO',
             4000,
           );
           this.router.navigate(['/login']);
         },
         error: (err) => {
           this.signupError = this.getErrorMessage(err);
-          this.toastService.danger(this.signupError, 'SIGNUP ERROR', 4000);
+          this.toastService.danger(this.signupError, 'ERROR DE REGISTRO', 4000);
         },
       });
     }
@@ -91,7 +91,8 @@ export class SignupComponent {
 
   getErrorMessage(err: any): string {
     return (
-      err?.error?.message || 'An unknown error occurred. Please try again.'
+      err?.error?.message ||
+      'Ocurrió un error desconocido. Intenta de nuevo.'
     );
   }
 }
