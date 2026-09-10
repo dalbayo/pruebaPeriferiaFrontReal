@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions, ValueFormatterParams } from 'ag-grid-community';
 import { PublicacionService } from '../../services/publicacion.service';
@@ -11,10 +12,17 @@ const ESTADO_LABELS: Record<number, string> = {
   2: 'Archivado',
 };
 
+/** 0 = todas, 1 = mis publicaciones, 2 = publicaciones de otros usuarios (debe coincidir con backend) */
+export const FILTRO_TIPOS = [
+  { valor: 0, etiqueta: 'Todas las publicaciones' },
+  { valor: 1, etiqueta: 'Mis publicaciones' },
+  { valor: 2, etiqueta: 'Publicaciones de otros usuarios' },
+];
+
 @Component({
   selector: 'app-mis-publicaciones',
   standalone: true,
-  imports: [AgGridModule, NgIf],
+  imports: [AgGridModule, NgIf, NgFor, FormsModule],
   templateUrl: './mis-publicaciones.component.html',
   styleUrls: ['./mis-publicaciones.component.scss'],
 })
@@ -22,6 +30,9 @@ export class MisPublicacionesComponent implements OnInit {
   rowData: Publicacion[] = [];
   loading = false;
   errorMessage = '';
+
+  filtroTipos = FILTRO_TIPOS;
+  tipoSeleccionado = 0;
 
   gridOptions: GridOptions = {
     pagination: true,
@@ -66,17 +77,21 @@ export class MisPublicacionesComponent implements OnInit {
     this.loadPublicaciones();
   }
 
+  onFiltroChange(): void {
+    this.loadPublicaciones();
+  }
+
   loadPublicaciones(): void {
     this.loading = true;
     this.errorMessage = '';
-    this.publicacionService.getMisPublicaciones().subscribe({
+    this.publicacionService.getPublicaciones(this.tipoSeleccionado).subscribe({
       next: (publicaciones) => {
         this.rowData = publicaciones;
         this.loading = false;
       },
       error: (err) => {
         this.errorMessage =
-          err?.error?.message || 'No se pudieron cargar tus publicaciones.';
+          err?.error?.message || 'No se pudieron cargar las publicaciones.';
         this.loading = false;
       },
     });

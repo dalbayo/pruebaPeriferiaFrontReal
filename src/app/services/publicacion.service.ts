@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -12,10 +12,10 @@ export class PublicacionService {
 
   constructor(private http: HttpClient) {}
 
-  // El token JWT se agrega automaticamente via authInterceptor. Endpoint
-  // dedicado en backend: filtra por usuario del token (@AuthenticationPrincipal),
-  // devuelve un array plano.
-  getMisPublicaciones(): Observable<Publicacion[]> {
-    return this.http.get<Publicacion[]>(`${this.baseUrl}/mis-publicaciones`);
+  // El token JWT se agrega automaticamente via authInterceptor.
+  // tipo: 0 = todas, 1 = mis publicaciones (usuario del token), 2 = publicaciones de otros usuarios.
+  getPublicaciones(tipo: number = 0): Observable<Publicacion[]> {
+    const params = new HttpParams().set('tipo', tipo.toString());
+    return this.http.get<Publicacion[]>(this.baseUrl, { params });
   }
 }
